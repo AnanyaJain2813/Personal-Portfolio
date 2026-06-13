@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ananya Jain | Cyber Security Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Custom scrollbar rules */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #070a13; }
+        ::-webkit-scrollbar-thumb { background: #1e294b; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #d946ef; }
+        
+        /* CRT overlay lines */
+        .scanlines {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.2) 50%);
+            background-size: 100% 4px; z-index: 999; pointer-events: none; opacity: 0.3;
+        }
+        .terminal-container { position: relative; }
+        .terminal-container::after {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            box-shadow: inset 0 0 30px rgba(217, 70, 239, 0.03); pointer-events: none;
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'], mono: ['Fira Code', 'monospace'] },
+                    colors: { cyber: { bg: '#070a13', card: '#0f1424', border: '#1e294b', purple: '#d946ef', sapphire: '#3b82f6', textMuted: '#94a3b8' } },
+                    boxShadow: { 'neon-purple': '0 0 15px rgba(217, 70, 239, 0.3)', 'neon-sapphire': '0 0 15px rgba(59, 130, 246, 0.3)', 'neon-glow': '0 0 25px rgba(217, 70, 239, 0.15), 0 0 40px rgba(59, 130, 246, 0.1)' }
+                }
+            }
+        }
+    </script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-cyber-bg text-slate-100 font-sans antialiased selection:bg-cyber-purple selection:text-black overflow-x-hidden">
+    <div class="scanlines"></div>
+    <canvas id="cyberCanvas" class="fixed top-0 left-0 w-full h-full -z-10 opacity-20 pointer-events-none"></canvas>
+    
+    <header class="sticky top-0 z-50 backdrop-blur-md bg-cyber-bg/80 border-b border-cyber-border transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            
+            <!-- Left Side Identity Banner with Profile Access Buttons Dock -->
+            <div class="flex items-center space-x-6">
+                <a href="#home" class="flex items-center space-x-2 font-mono font-bold text-lg tracking-wider text-white hover:text-cyber-purple transition-colors">
+                    <i data-lucide="terminal" class="w-6 h-6 text-cyber-purple animate-pulse"></i><span>ANANYA<span class="text-cyber-purple">_</span>JAIN</span>
+                </a>
+                
+                <!-- TOP LEFT ACCESS BUTTONS DOCK (Desktop Navigation) -->
+                <div class="hidden sm:flex items-center space-x-3 border-l border-cyber-border pl-6 font-mono text-xs text-cyber-textMuted">
+                    <a href="https://github.com/AnanyaJain2813" target="_blank" rel="noopener noreferrer" class="flex items-center gap-1.5 hover:text-cyber-purple transition-colors group" title="GitHub Account Link">
+                        <i data-lucide="github" class="w-4 h-4 group-hover:text-cyber-purple transition-colors"></i>
+                        <span class="hidden md:inline text-[11px] font-medium tracking-tight">GitHub</span>
+                    </a>
+                    <span class="opacity-30">|</span>
+                    <a href="https://www.linkedin.com/in/ananya-jain-715b9b29a/" target="_blank" rel="noopener noreferrer" class="flex items-center gap-1.5 hover:text-cyber-purple transition-colors group" title="LinkedIn Profile">
+                        <i data-lucide="linkedin" class="w-4 h-4 group-hover:text-cyber-purple transition-colors"></i>
+                        <span class="hidden md:inline text-[11px] font-medium tracking-tight">LinkedIn</span>
+                    </a>
+                    <span class="opacity-30">|</span>
+                    <a href="https://leetcode.com/u/Ananya_Jain28/" target="_blank" rel="noopener noreferrer" class="flex items-center gap-1.5 hover:text-cyber-purple transition-colors group" title="LeetCode Profile">
+                        <i data-lucide="code-2" class="w-4 h-4 group-hover:text-cyber-purple transition-colors"></i>
+                        <span class="hidden md:inline text-[11px] font-medium tracking-tight">LeetCode</span>
+                    </a>
+                </div>
+            </div>
+
+            <nav class="hidden md:flex items-center space-x-8 font-mono text-sm">
+                <a href="#home" class="nav-link text-cyber-purple border-b-2 border-cyber-purple pb-1 transition-all">Home</a>
+                <a href="#dashboard" class="nav-link text-cyber-textMuted hover:text-white pb-1 border-b-2 border-transparent transition-all">Dashboard</a>
+                <a href="#about" class="nav-link text-cyber-textMuted hover:text-white pb-1 border-b-2 border-transparent transition-all">About</a>
+                <a href="#experience" class="nav-link text-cyber-textMuted hover:text-white pb-1 border-b-2 border-transparent transition-all">Experience</a>
+                <a href="#projects" class="nav-link text-cyber-textMuted hover:text-white pb-1 border-b-2 border-transparent transition-all">Projects</a>
+                <a href="#skills" class="nav-link text-cyber-textMuted hover:text-white pb-1 border-b-2 border-transparent transition-all">Skills</a>
+                <a href="#contact" class="nav-link text-cyber-textMuted hover:text-white pb-1 border-b-2 border-transparent transition-all">Contact</a>
+            </nav>
+            <button id="mobileMenuBtn" class="md:hidden p-2 text-cyber-textMuted hover:text-cyber-purple" aria-label="Toggle Menu"><i data-lucide="menu" id="menuIcon" class="w-6 h-6"></i></button>
+        </div>
+        
+        <!-- Mobile Navigation Dropdown Menu Structure -->
+        <div id="mobileMenu" class="hidden md:hidden border-b border-cyber-border bg-cyber-bg/95 font-mono px-4 py-4 space-y-3">
+            <!-- TOP LEFT ACCESS BUTTONS DOCK (Mobile Adaptive Shell) -->
+            <div class="flex items-center space-x-4 pb-3 border-b border-cyber-border/40 px-3 text-cyber-textMuted">
+                <a href="https://github.com/AnanyaJain2813" target="_blank" rel="noopener noreferrer" class="flex items-center gap-1 hover:text-cyber-purple"><i data-lucide="github" class="w-4 h-4"></i><span class="text-[11px]">Git</span></a>
+                <a href="https://www.linkedin.com/in/ananya-jain-715b9b29a/" target="_blank" rel="noopener noreferrer" class="flex items-center gap-1 hover:text-cyber-purple"><i data-lucide="linkedin" class="w-4 h-4"></i><span class="text-[11px]">LinkedIn</span></a>
+                <a href="https://leetcode.com/u/Ananya_Jain28/" target="_blank" rel="noopener noreferrer" class="flex items-center gap-1 hover:text-cyber-purple"><i data-lucide="code-2" class="w-4 h-4"></i><span class="text-[11px]">LeetCode</span></a>
+            </div>
+            <a href="#home" class="mobile-nav-link block text-cyber-purple py-2 border-l-2 border-cyber-purple pl-3">Home</a>
+            <a href="#dashboard" class="mobile-nav-link block text-cyber-textMuted hover:text-white py-2 border-l-2 border-transparent pl-3">Dashboard</a>
+            <a href="#about" class="mobile-nav-link block text-cyber-textMuted hover:text-white py-2 border-l-2 border-transparent pl-3">About</a>
+            <a href="#experience" class="mobile-nav-link block text-cyber-textMuted hover:text-white py-2 border-l-2 border-transparent pl-3">Experience</a>
+            <a href="#projects" class="mobile-nav-link block text-cyber-textMuted hover:text-white py-2 border-l-2 border-transparent pl-3">Projects</a>
+            <a href="#skills" class="mobile-nav-link block text-cyber-textMuted hover:text-white py-2 border-l-2 border-transparent pl-3">Skills</a>
+            <a href="#contact" class="mobile-nav-link block text-cyber-textMuted hover:text-white py-2 border-l-2 border-transparent pl-3">Contact</a>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <!-- Hero Section -->
+        <section id="home" class="min-h-screen flex flex-col justify-center pt-24 pb-16 md:py-32">
+            <!-- Top Row: Info Content on Left, Profile Image on Right -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center mb-12">
+                <!-- Profile Text (Left) -->
+                <div class="lg:col-span-8 space-y-6">
+                    <div class="inline-flex items-center space-x-2 bg-cyber-purple/10 border border-cyber-purple/30 px-3 py-1 rounded-md text-xs font-mono text-cyber-purple shadow-neon-purple">
+                        <span class="w-2 h-2 rounded-full bg-cyber-purple animate-ping"></span><span>ANANYA'S PORTFOLIO</span>
+                    </div>
+                    <h1 class="text-5xl sm:text-7xl font-bold tracking-tight text-white font-sans">Ananya Jain</h1>
+                    <h2 class="text-xl sm:text-2xl font-mono text-cyber-sapphire font-semibold">&gt;_ Cyber Security Enthusiast</h2>
+                    <p class="text-base text-cyber-textMuted leading-relaxed max-w-3xl">
+                        I am a Computer Science and Engineering student specializing in Cyber Security at VIT Bhopal. 
+                        Practical experience in SOC operations, threat monitoring, vulnerability assessment, and web application security testing.
+                    </p>
+                    
+                    <!-- Modified Action Buttons Cluster -->
+                    <div class="flex flex-wrap gap-4 pt-2 items-center">
+                        <a href="#projects" class="px-5 py-3 border border-cyber-purple text-cyber-purple font-mono text-xs font-semibold rounded shadow-neon-purple hover:bg-cyber-purple hover:text-black transition-all">
+                            View Projects
+                        </a>
+                        <a href="#contact" class="px-5 py-3 border border-cyber-sapphire text-cyber-sapphire font-mono text-xs font-semibold rounded shadow-neon-sapphire hover:bg-cyber-sapphire hover:text-black transition-all">
+                            Contact Me
+                        </a>
+                        <!-- Relocated ATS Resume Download Button -->
+                        <a href="assets/Ananya_Jain_Resume.pdf" download="Ananya_Jain_Resume.pdf" class="flex items-center gap-2 px-5 py-3 bg-gradient-to-r from-cyber-purple/10 to-cyber-sapphire/10 border border-white/20 text-white font-mono text-xs font-semibold rounded hover:border-cyber-purple hover:shadow-neon-purple transition-all duration-300 transform hover:-translate-y-0.5 group">
+                            <i data-lucide="download" class="w-4 h-4 text-cyber-purple transition-colors"></i>
+                            <span>DOWNLOAD_RESUME.pdf</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Profile Photo (Right Side - Permanently Coloured) -->
+                <div class="lg:col-span-4 flex justify-center lg:justify-end">
+                    <div class="relative group max-w-xs w-full">
+                        <div class="absolute -inset-1 bg-gradient-to-r from-cyber-purple to-cyber-sapphire rounded-xl blur opacity-40 group-hover:opacity-70 transition duration-500"></div>
+                        <div class="relative w-full aspect-square rounded-xl overflow-hidden border border-cyber-border bg-cyber-card shadow-neon-glow">
+                            <img 
+                                src="profile.jpeg" 
+                                alt="Ananya Jain Profile Snapshot" 
+                                class="w-full h-full object-cover opacity-95 group-hover:scale-105 transition-all duration-500"
+                            >
+                            <div class="absolute inset-0 border border-cyber-purple/20 pointer-events-none m-3 rounded-lg"></div>
+                            <div class="absolute bottom-2 left-3 text-[9px] font-mono text-cyber-purple/80 tracking-wider">ANANYA JAIN</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Row: Terminal Workspace Container -->
+            <div class="w-full max-w-4xl mx-auto">
+                <div class="terminal-container w-full rounded-md border border-cyber-border bg-[#090d1a]/95 font-mono shadow-neon-glow overflow-hidden">
+                    <div class="bg-cyber-card px-4 py-3 border-b border-cyber-border flex items-center justify-between">
+                        <div class="flex items-center space-x-2">
+                            <span class="w-3 h-3 rounded-full bg-cyber-purple/60"></span>
+                            <span class="w-3 h-3 rounded-full bg-cyber-sapphire/60"></span>
+                        </div>
+                        <span class="text-xs text-cyber-textMuted flex items-center gap-1">
+                            <i data-lucide="shield-alert" class="w-3 h-3"></i> secure_shell.sh
+                        </span>
+                    </div>
+                    <div id="terminalBody" class="p-4 h-56 overflow-y-auto text-xs sm:text-sm space-y-2 text-cyber-purple">
+                        <p class="text-cyber-textMuted">// Secure Terminal Interface initiated below operational boundaries.</p>
+                        <p class="text-cyber-textMuted">// Vector options: <span class="text-cyber-sapphire">help</span>, <span class="text-cyber-sapphire">skills</span>, <span class="text-cyber-sapphire">about</span>, <span class="text-cyber-sapphire">clear</span></p>
+                        <div id="terminalOutput"></div>
+                        <div class="flex items-center text-white pt-1">
+                            <span class="text-cyber-sapphire mr-2">guest@ananya_sec:~$&nbsp;</span>
+                            <input type="text" id="terminalInput" class="bg-transparent border-none outline-none flex-grow text-white font-mono focus:ring-0 p-0" autocomplete="off" spellcheck="false">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="border-cyber-border my-0">
+
+        <!-- Live Metrics Telemetry Dashboard Component Block -->
+        <section id="dashboard" class="py-24 section-target">
+            <div class="mb-12 border-b border-cyber-border/60 pb-6">
+                <div class="inline-flex items-center space-x-2 font-mono text-cyber-purple text-xs tracking-wider uppercase mb-1">
+                    <i data-lucide="activity" class="w-3.5 h-3.5 text-cyber-purple"></i> <span>[ TELEMETRY_HANDSHAKE_LIVE ]</span>
+                </div>
+                <h2 class="text-3xl font-bold tracking-tight text-white font-sans">Live Core Analytics Dashboard</h2>
+            </div>
+
+            <!-- Dashboard Modules Execution Shell Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                
+                <!-- GITHUB NATIVE STATS OVERHAUL (Matches reference UI mockup structural metrics) -->
+                <div class="bg-[#0b0f19] border border-cyber-border rounded-xl p-6 font-mono shadow-neon-glow flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-6 border-b border-cyber-border pb-4">
+                            <span class="text-xs text-cyber-purple flex items-center gap-2">
+                                <i data-lucide="github" class="w-4 h-4 text-cyber-purple"></i> VERCEL_STATS_PROXY // GITHUB
+                            </span>
+                            <span id="githubTimer" class="text-[10px] text-cyber-sapphire font-semibold tracking-wider uppercase bg-cyber-sapphire/10 border border-cyber-sapphire/20 px-2.5 py-0.5 rounded">Last updated: 0s ago</span>
+                        </div>
+
+                        <!-- Top Level Summary Flex Matrix Components -->
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+                            <div class="bg-cyber-card/80 border border-cyber-border p-3 rounded-lg text-center shadow-inner">
+                                <div class="text-[10px] text-cyber-textMuted uppercase font-medium tracking-tight mb-1">Total Commits</div>
+                                <div class="text-2xl font-bold text-cyber-purple font-sans tracking-tight">482</div>
+                            </div>
+                            <div class="bg-cyber-card/80 border border-cyber-border p-3 rounded-lg text-center shadow-inner">
+                                <div class="text-[10px] text-cyber-textMuted uppercase font-medium tracking-tight mb-1">PRs Opened</div>
+                                <div class="text-2xl font-bold text-cyber-sapphire font-sans tracking-tight">34</div>
+                            </div>
+                            <div class="bg-cyber-card/80 border border-cyber-border p-3 rounded-lg text-center shadow-inner">
+                                <div class="text-[10px] text-cyber-textMuted uppercase font-medium tracking-tight mb-1">Repo Vaults</div>
+                                <div class="text-2xl font-bold text-slate-100 font-sans tracking-tight">18</div>
+                            </div>
+                            <div class="bg-cyber-card/80 border border-cyber-border p-3 rounded-lg text-center shadow-inner">
+                                <div class="text-[10px] text-cyber-textMuted uppercase font-medium tracking-tight mb-1">Total Stars</div>
+                                <div class="text-2xl font-bold text-yellow-400 font-sans tracking-tight">12</div>
+                            </div>
+                        </div>
+
+                        <!-- Live Repository Commit Trace Subsystems -->
+                        <div class="bg-black/30 p-4 rounded-xl border border-cyber-border/60 text-xs text-cyber-textMuted space-y-3">
+                            <div class="flex items-center justify-between text-[11px] text-cyber-purple font-bold uppercase tracking-wider pb-1 border-b border-cyber-border/30">
+                                <span>// RECENT STAGED LOG INJECTIONS</span>
+                                <span class="text-cyber-sapphire text-[9px] lowercase opacity-80">branch: origin/main</span>
+                            </div>
+                            <div class="flex items-center justify-between gap-4">
+                                <div class="flex items-center gap-2 truncate">
+                                    <i data-lucide="git-commit" class="w-3.5 h-3.5 text-cyber-purple flex-shrink-0"></i>
+                                    <span class="text-slate-200 truncate">fix(sec-auth): harden Feistel Cipher pipeline loop validation array</span>
+                                </div>
+                                <span class="text-[10px] opacity-50 flex-shrink-0">2h ago</span>
+                            </div>
+                            <div class="flex items-center justify-between gap-4">
+                                <div class="flex items-center gap-2 truncate">
+                                    <i data-lucide="git-commit" class="w-3.5 h-3.5 text-cyber-purple flex-shrink-0"></i>
+                                    <span class="text-slate-200 truncate">feat(ml-model): optimization processing parameters for Phishing classification</span>
+                                </div>
+                                <span class="text-[10px] opacity-50 flex-shrink-0">1d ago</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 flex justify-between items-center text-[11px] border-t border-cyber-border/40 pt-4">
+                        <span class="text-cyber-textMuted">SOURCE: api.github.com</span>
+                        <a href="https://github.com/AnanyaJain2813" target="_blank" class="text-cyber-purple hover:underline flex items-center gap-1 font-semibold tracking-wide">explore_repositories &rarr;</a>
+                    </div>
+                </div>
+
+                <!-- LEETCODE NATIVE STATS OVERHAUL (Matches image_44649b.jpg layout structure requirements) -->
+                <div class="bg-[#0b0f19] border border-cyber-border rounded-xl p-6 font-mono shadow-neon-glow flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-6 border-b border-cyber-border pb-4">
+                            <span class="text-xs text-cyber-sapphire flex items-center gap-2">
+                                <i data-lucide="code-2" class="w-4 h-4 text-cyber-sapphire"></i> GRAPHQL_STREAM // LEETCODE
+                            </span>
+                            <span id="leetcodeTimer" class="text-[10px] text-cyber-purple font-semibold tracking-wider uppercase bg-cyber-purple/10 border border-cyber-purple/20 px-2.5 py-0.5 rounded">Last updated: 0s ago</span>
+                        </div>
+
+                        <!-- Higher-Tier Summary Blocks matching reference formatting card layout -->
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+                            <div class="bg-cyber-card/80 border border-cyber-border p-3 rounded-lg text-center shadow-inner">
+                                <div class="text-[10px] text-cyber-textMuted uppercase font-medium tracking-tight mb-1">Problems Solved</div>
+                                <div class="text-2xl font-bold text-white font-sans tracking-tight">116</div>
+                            </div>
+                            <div class="bg-cyber-card/80 border border-cyber-border p-3 rounded-lg text-center shadow-inner">
+                                <div class="text-[10px] text-cyber-textMuted uppercase font-medium tracking-tight mb-1">Global Ranking</div>
+                                <div class="text-2xl font-bold text-cyber-sapphire font-sans tracking-tight">Top 15%</div>
+                            </div>
+                            <div class="bg-cyber-card/80 border border-cyber-border p-3 rounded-lg text-center shadow-inner">
+                                <div class="text-[10px] text-cyber-textMuted uppercase font-medium tracking-tight mb-1">Acceptance Rate</div>
+                                <div class="text-2xl font-bold text-emerald-400 font-sans tracking-tight">65.5%</div>
+                            </div>
+                            <div class="bg-cyber-card/80 border border-cyber-border p-3 rounded-lg text-center shadow-inner">
+                                <div class="text-[10px] text-cyber-textMuted uppercase font-medium tracking-tight mb-1">Contribution Pts</div>
+                                <div class="text-2xl font-bold text-cyber-purple font-sans tracking-tight">45</div>
+                            </div>
+                        </div>
+
+                        <!-- Sub-Difficulty Distribution Progress Bars Framework Layout -->
+                        <div class="space-y-4 bg-black/30 p-5 rounded-xl border border-cyber-border/60 text-xs">
+                            <p class="text-cyber-sapphire text-[11px] font-bold uppercase tracking-wider pb-1 border-b border-cyber-border/30">// PROBLEMS SOLVED BY DIFFICULTY</p>
+                            
+                            <!-- Easy Difficulty Matrix Progress Block -->
+                            <div>
+                                <div class="flex justify-between text-emerald-400 mb-1 font-medium font-sans">
+                                    <span class="font-mono text-xs flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Easy</span>
+                                    <span>43 <span class="text-cyber-textMuted text-[10px] font-mono">out of 800+ problems</span></span>
+                                </div>
+                                <div class="w-full bg-slate-800/80 h-2 rounded-full overflow-hidden p-[1px] border border-slate-700/40">
+                                    <div class="bg-emerald-400 h-full rounded-full shadow-[0_0_8px_rgba(52,211,153,0.5)]" style="width: 32%"></div>
+                                </div>
+                            </div>
+
+                            <!-- Medium Difficulty Matrix Progress Block -->
+                            <div>
+                                <div class="flex justify-between text-amber-500 mb-1 font-medium font-sans">
+                                    <span class="font-mono text-xs flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span> Medium</span>
+                                    <span>50 <span class="text-cyber-textMuted text-[10px] font-mono">out of 1600+ problems</span></span>
+                                </div>
+                                <div class="w-full bg-slate-800/80 h-2 rounded-full overflow-hidden p-[1px] border border-slate-700/40">
+                                    <div class="bg-amber-500 h-full rounded-full shadow-[0_0_8px_rgba(245,158,11,0.5)]" style="width: 21%"></div>
+                                </div>
+                            </div>
+
+                            <!-- Hard Difficulty Matrix Progress Block -->
+                            <div>
+                                <div class="flex justify-between text-rose-500 mb-1 font-medium font-sans">
+                                    <span class="font-mono text-xs flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span> Hard</span>
+                                    <span>23 <span class="text-cyber-textMuted text-[10px] font-mono">out of 700+ problems</span></span>
+                                </div>
+                                <div class="w-full bg-slate-800/80 h-2 rounded-full overflow-hidden p-[1px] border border-slate-700/40">
+                                    <div class="bg-rose-500 h-full rounded-full shadow-[0_0_8px_rgba(244,63,94,0.5)]" style="width: 11%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 flex justify-between items-center text-[11px] border-t border-cyber-border/40 pt-4">
+                        <span class="text-cyber-textMuted">SOURCE: leetcode.com/graphql</span>
+                        <a href="https://leetcode.com/u/Ananya_Jain28/" target="_blank" class="text-cyber-sapphire hover:underline flex items-center gap-1 font-semibold tracking-wide">verify_profile &rarr;</a>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <hr class="border-cyber-border my-0">
+
+        <!-- About Section -->
+        <section id="about" class="py-24 section-target">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+                <div class="lg:col-span-5 space-y-4">
+                    <div class="flex items-center space-x-2 font-mono text-cyber-purple text-sm tracking-wider uppercase"><span>[ PERSONAL DOSSIER ]</span></div>
+                    <h2 class="text-3xl font-bold text-white">About Me</h2>
+                    <p class="text-cyber-textMuted leading-relaxed pt-2">My interests include network security, incident response, ethical hacking, malware analysis, SIEM technologies, and secure software development. I enjoy solving security challenges, learning emerging technologies, and building innovative solutions that combine cybersecurity with modern technologies.</p>
+                    <div class="p-4 border border-cyber-border bg-cyber-card/60 rounded font-mono text-xs text-cyber-textMuted space-y-2">
+                        <div class="flex justify-between"><span class="text-white">NAME:</span> <span>Ananya Jain</span></div>
+                        <div class="flex justify-between"><span class="text-white">FOCUS AREAS:</span> <span class="text-cyber-purple">SOC / PENTEST</span></div>
+                    </div>
+                    
+                    <h3 class="text-sm font-mono text-cyber-sapphire uppercase tracking-wider mt-6">[ EXTRA CURRICULAR LOGS ]</h3>
+                    <div class="space-y-2 text-xs font-mono text-cyber-textMuted">
+                        <p class="border-l-2 border-cyber-purple pl-2"><strong class="text-white">Edu4U Club:</strong> Core Member | Design Team</p>
+                        <p class="border-l-2 border-cyber-sapphire pl-2"><strong class="text-white">Advitya'25 & '26:</strong> Volunteer | Discipline Team</p>
+                    </div>
+                </div>
+                <div class="lg:col-span-7 space-y-6">
+                    <div class="flex items-center space-x-2 font-mono text-cyber-sapphire text-sm tracking-wider uppercase"><span>[ ACADEMIC TIMELINE ]</span></div>
+                    <h2 class="text-3xl font-bold text-white mb-6">Education Ledgers</h2>
+                    <div class="space-y-6 border-l border-cyber-border pl-4 ml-2">
+                        <div class="bg-cyber-card border border-cyber-border p-5 rounded hover:border-cyber-purple/50 transition-colors">
+                            <div class="flex flex-wrap justify-between items-start gap-2 mb-2">
+                                <div><h4 class="text-base font-semibold text-white">B.Tech - Computer Science & Engineering (Cyber Security)</h4><p class="text-sm font-mono text-cyber-purple">Vellore Institute of Technology, Bhopal</p></div>
+                                <span class="text-xs font-mono bg-cyber-purple/10 border border-cyber-purple/20 px-2 py-1 text-cyber-purple rounded">2023 – 2027</span>
+                            </div>
+                        </div>
+                        <div class="bg-cyber-card border border-cyber-border p-5 rounded hover:border-cyber-sapphire/50 transition-colors">
+                            <div class="flex flex-wrap justify-between items-start gap-2 mb-2">
+                                <div><h4 class="text-base font-semibold text-white">Higher Secondary Education (Class XII)</h4><p class="text-sm font-mono text-cyber-sapphire">Happy Days School</p></div>
+                                <span class="text-xs font-mono bg-cyber-sapphire/10 border border-cyber-sapphire/20 px-2 py-1 text-cyber-sapphire rounded">2020 – 2022</span>
+                            </div>
+                        </div>
+                        <div class="bg-cyber-card border border-cyber-border p-5 rounded">
+                            <div class="flex flex-wrap justify-between items-start gap-2 mb-2">
+                                <div><h4 class="text-base font-semibold text-white">Secondary Education (Class X)</h4><p class="text-sm font-mono text-cyber-textMuted">Happy Days School</p></div>
+                                <span class="text-xs font-mono bg-slate-800 border px-2 py-1 text-cyber-textMuted rounded">2018 – 2020</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="border-cyber-border my-0">
+
+        <!-- Experience Section -->
+        <section id="experience" class="py-24 section-target">
+            <div class="flex flex-col items-center text-center mb-12">
+                <div class="inline-flex items-center space-x-2 font-mono text-cyber-purple text-sm tracking-wider uppercase mb-2"><i data-lucide="shield-check" class="w-4 h-4"></i> <span>[ AUDIT LOGS ]</span></div>
+                <h2 class="text-3xl font-bold text-white sm:text-4xl">Work Experience</h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-cyber-card border border-cyber-border p-6 rounded-md flex flex-col justify-between hover:border-cyber-purple/40 transition-colors">
+                    <div>
+                        <div class="flex items-start justify-between gap-2 mb-4">
+                            <div><span class="text-xs font-mono text-cyber-purple tracking-wider block mb-1">// PRESENT APPOINTMENT</span><h3 class="text-xl font-bold text-white">SOC L1 Intern</h3><p class="text-sm font-mono text-white/90">Techniki IT Solutions</p></div>
+                            <div class="text-right text-xs font-mono text-cyber-textMuted"><div class="text-cyber-purple font-bold">May 2026 – Present</div><div>Firozabad, India</div></div>
+                        </div>
+                        <ul class="space-y-2.5 text-sm text-cyber-textMuted border-t border-cyber-border pt-4">
+                            <li class="flex items-start gap-2"><i data-lucide="chevron-right" class="w-4 h-4 text-cyber-purple mt-0.5 flex-shrink-0"></i><span>Monitored security alerts and events using SIEM tools.</span></li>
+                            <li class="flex items-start gap-2"><i data-lucide="chevron-right" class="w-4 h-4 text-cyber-purple mt-0.5 flex-shrink-0"></i><span>Investigated phishing, malware, and suspicious activity alerts.</span></li>
+                            <li class="flex items-start gap-2"><i data-lucide="chevron-right" class="w-4 h-4 text-cyber-purple mt-0.5 flex-shrink-0"></i><span>Assisted in vulnerability assessments and threat monitoring.</span></li>
+                            <li class="flex items-start gap-2"><i data-lucide="chevron-right" class="w-4 h-4 text-cyber-purple mt-0.5 flex-shrink-0"></i><span>Documented security incidents and remediation activities.</span></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="bg-cyber-card border border-cyber-border p-6 rounded-md flex flex-col justify-between hover:border-cyber-sapphire/40 transition-colors">
+                    <div>
+                        <div class="flex items-start justify-between gap-2 mb-4">
+                            <div><span class="text-xs font-mono text-cyber-sapphire tracking-wider block mb-1">// SYSTEM ARCHIVE</span><h3 class="text-xl font-bold text-white">Cyber Security Intern</h3><p class="text-sm font-mono text-white/90">The Red Users</p></div>
+                            <div class="text-right text-xs font-mono text-cyber-textMuted"><div class="text-cyber-sapphire font-bold">Feb 2025 – Mar 2025</div><div>Remote</div></div>
+                        </div>
+                        <ul class="space-y-2.5 text-sm text-cyber-textMuted border-t border-cyber-border pt-4">
+                            <li class="flex items-start gap-2"><i data-lucide="chevron-right" class="w-4 h-4 text-cyber-sapphire mt-0.5 flex-shrink-0"></i><span>Analyzed network threats and implemented security measures.</span></li>
+                            <li class="flex items-start gap-2"><i data-lucide="chevron-right" class="w-4 h-4 text-cyber-sapphire mt-0.5 flex-shrink-0"></i><span>Monitored network traffic using Wireshark.</span></li>
+                            <li class="flex items-start gap-2"><i data-lucide="chevron-right" class="w-4 h-4 text-cyber-sapphire mt-0.5 flex-shrink-0"></i><span>Performed web application vulnerability assessments using OWASP methodology.</span></li>
+                            <li class="flex items-start gap-2"><i data-lucide="chevron-right" class="w-4 h-4 text-cyber-sapphire mt-0.5 flex-shrink-0"></i><span>Identified SQL Injection, XSS, and CSRF vulnerabilities.</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="border-cyber-border my-0">
+
+        <!-- Projects Matrix Section -->
+        <section id="projects" class="py-24 section-target">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+                <div>
+                    <div class="inline-flex items-center space-x-2 font-mono text-cyber-purple text-sm tracking-wider uppercase mb-2"><i data-lucide="folder" class="w-4 h-4"></i> <span>[ ARTIFACT VAULTS ]</span></div>
+                    <h2 class="text-3xl font-bold text-white sm:text-4xl">Security Sandbox</h2>
+                </div>
+                <div class="flex flex-wrap gap-2 font-mono text-xs">
+                    <button data-filter="all" class="filter-btn px-4 py-2 bg-cyber-purple text-black rounded font-bold">ALL_SYSTEMS</button>
+                    <button data-filter="cyber" class="filter-btn px-4 py-2 bg-transparent text-cyber-textMuted border border-cyber-border rounded">CRYPT_&_SEC</button>
+                    <button data-filter="ml" class="filter-btn px-4 py-2 bg-transparent text-cyber-textMuted border border-cyber-border rounded">ML_MODELS</button>
+                </div>
+            </div>
+            <div id="projectGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="project-card bg-cyber-card border border-cyber-border rounded-md p-6 flex flex-col justify-between" data-category="ml">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="p-2 bg-cyber-purple/10 rounded"><i data-lucide="pie-chart" class="w-5 h-5 text-cyber-purple"></i></div>
+                            <a href="https://github.com/AnanyaJain2813" target="_blank" class="text-cyber-textMuted hover:text-cyber-purple"><i data-lucide="github" class="w-5 h-5"></i></a>
+                        </div>
+                        <h3 class="text-lg font-bold text-white mb-2">Employee Attrition Prediction</h3>
+                        <p class="text-sm text-cyber-textMuted mb-4">Built machine learning models to predict employee attrition using HR datasets. Applied Logistic Regression and Random Forest algorithms.</p>
+                    </div>
+                    <div class="flex flex-wrap gap-1.5 pt-2"><span class="text-[10px] font-mono px-2 py-0.5 bg-slate-800 text-slate-300 rounded">Python</span><span class="text-[10px] font-mono px-2 py-0.5 bg-slate-800 text-slate-300 rounded">Scikit-Learn</span></div>
+                </div>
+                <div class="project-card bg-cyber-card border border-cyber-border rounded-md p-6 flex flex-col justify-between" data-category="cyber">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="p-2 bg-cyber-sapphire/10 rounded"><i data-lucide="binary" class="w-5 h-5 text-cyber-sapphire"></i></div>
+                            <a href="https://github.com/AnanyaJain2813" target="_blank" class="text-cyber-textMuted hover:text-cyber-sapphire"><i data-lucide="github" class="w-5 h-5"></i></a>
+                        </div>
+                        <h3 class="text-lg font-bold text-white mb-2">Feistel Cipher Simulation</h3>
+                        <p class="text-sm text-cyber-textMuted mb-4">Implemented multi-round Feistel cipher encryption and decryption demonstrating symmetric key cryptography fundamentals.</p>
+                    </div>
+                    <div class="flex flex-wrap gap-1.5 pt-2"><span class="text-[10px] font-mono px-2 py-0.5 bg-slate-800 text-slate-300 rounded">C Programming</span><span class="text-[10px] font-mono px-2 py-0.5 bg-slate-800 text-slate-300 rounded">Cryptography</span></div>
+                </div>
+                <div class="project-card bg-cyber-card border border-cyber-border rounded-md p-6 flex flex-col justify-between" data-category="ml">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="p-2 bg-cyber-purple/10 rounded"><i data-lucide="scan-eye" class="w-5 h-5 text-cyber-purple"></i></div>
+                            <a href="https://github.com/AnanyaJain2813" target="_blank" class="text-cyber-textMuted hover:text-cyber-purple"><i data-lucide="github" class="w-5 h-5"></i></a>
+                        </div>
+                        <h3 class="text-lg font-bold text-white mb-2">Phishing Website Detection</h3>
+                        <p class="text-sm text-cyber-textMuted mb-4">Engineered URL-based features for phishing detection and trained Decision Tree and Random Forest classifiers.</p>
+                    </div>
+                    <div class="flex flex-wrap gap-1.5 pt-2"><span class="text-[10px] font-mono px-2 py-0.5 bg-slate-800 text-slate-300 rounded">Python</span><span class="text-[10px] font-mono px-2 py-0.5 bg-slate-800 text-slate-300 rounded">Machine Learning</span></div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="border-cyber-border my-0">
+
+        <!-- Skills Matrix Section -->
+        <section id="skills" class="py-24 section-target">
+            <div class="flex flex-col items-center text-center mb-12">
+                <div class="inline-flex items-center space-x-2 font-mono text-cyber-sapphire text-sm tracking-wider uppercase mb-2"><i data-lucide="cpu" class="w-4 h-4"></i> <span>[ CAPABILITY MATRIX ]</span></div>
+                <h2 class="text-3xl font-bold text-white sm:text-4xl">Technical Skills Matrix</h2>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="bg-cyber-card border border-cyber-border p-5 rounded-md">
+                    <div class="flex items-center gap-2 mb-4 text-cyber-purple font-mono text-xs uppercase"><i data-lucide="code" class="w-4 h-4"></i> <span>LANGUAGES</span></div>
+                    <div class="flex flex-wrap gap-1.5"><span class="px-2 py-0.5 text-xs font-mono bg-cyber-bg border text-white rounded">C</span><span class="px-2 py-0.5 text-xs font-mono bg-cyber-bg border text-white rounded">C++</span><span class="px-2 py-0.5 text-xs font-mono bg-cyber-bg border text-white rounded">Python</span><span class="px-2 py-0.5 text-xs font-mono bg-cyber-bg border text-white rounded">Java</span><span class="px-2 py-0.5 text-xs font-mono bg-cyber-bg border text-white rounded">JavaScript</span><span class="px-2 py-0.5 text-xs font-mono bg-cyber-bg border text-white rounded">SQL</span></div>
+                </div>
+                <div class="bg-cyber-card border border-cyber-border p-5 rounded-md">
+                    <div class="flex items-center gap-2 mb-4 text-cyber-sapphire font-mono text-xs uppercase"><i data-lucide="layers" class="w-4 h-4"></i> <span>FRAMEWORKS</span></div>
+                    <div class="flex flex-wrap gap-1.5"><span class="px-2 py-0.5 text-xs font-mono bg-cyber-bg border text-white rounded">React.js</span><span class="px-2 py-0.5 text-xs font-mono bg-cyber-bg border text-white rounded">Node.js</span><span class="px-2 py-0.5 text-xs font-mono bg-cyber-bg border text-white rounded">Express.js</span><span class="px-2 py-0.5 text-xs font-mono bg-cyber-bg border text-white rounded">Tailwind CSS</span></div>
+                </div>
+                <div class="bg-cyber-card border border-cyber-border p-5 rounded-md col-span-1 sm:col-span-2">
+                    <div class="flex items-center gap-2 mb-4 text-cyber-purple font-mono text-xs uppercase"><i data-lucide="shield" class="w-4 h-4"></i> <span>CYBER SECURITY & SYSTEMS</span></div>
+                    <div class="flex flex-wrap gap-1.5">
+                        <span class="px-2 py-0.5 text-xs font-mono bg-cyber-bg border text-white rounded">SOC Monitoring</span><span class="px-2 py-0.5 text-xs font-mono bg-cyber-bg border text-white rounded">SIEM</span><span class="px-2 py-0.5 text-xs font-mono bg-cyber-bg border text-white rounded">Wireshark</span><span class="px-2 py-0.5 text-xs font-mono bg-cyber-bg border text-white rounded">OWASP Top 10</span>
+                        <span class="px-2 py-0.5 text-xs font-mono bg-cyber-bg border text-white rounded">Vulnerability Assessment</span><span class="px-2 py-0.5 text-xs font-mono bg-cyber-bg border text-white rounded">OOPS</span><span class="px-2 py-0.5 text-xs font-mono bg-cyber-bg border text-white rounded">DBMS</span><span class="px-2 py-0.5 text-xs font-mono bg-cyber-bg border text-white rounded">Operating Systems</span>
+                        <span class="px-2 py-0.5 text-xs font-mono bg-cyber-bg border text-white rounded">Computer Networks (TCP/IP)</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="border-cyber-border my-0">
+
+        <!-- Contact Section -->
+        <section id="contact" class="py-24 section-target">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+                <div class="lg:col-span-5 space-y-6">
+                    <h2 class="text-3xl font-bold text-white">Establish Link</h2>
+                    <p class="text-cyber-textMuted text-sm">Initiate secure contact parameters. Open to conversations surrounding threat validation engineering, SecOps integrations, or internships.</p>
+                    <div class="space-y-3 font-mono text-sm">
+                        <div class="flex items-center space-x-3 text-cyber-textMuted bg-cyber-card p-3 rounded border border-cyber-border"><i data-lucide="mail" class="w-5 h-5 text-cyber-purple"></i><a href="mailto:jainananya2800@gmail.com" class="truncate">jainananya2800@gmail.com</a></div>
+                        <div class="flex items-center space-x-3 text-cyber-textMuted bg-cyber-card p-3 rounded border border-cyber-border"><i data-lucide="phone" class="w-5 h-5 text-cyber-sapphire"></i><a href="tel:+919589801328">+91-9589801328</a></div>
+                    </div>
+                </div>
+                <div class="lg:col-span-7">
+                    <form class="bg-cyber-card border border-cyber-border rounded-md p-6 font-mono text-sm space-y-4" onsubmit="event.preventDefault(); alert('Handshake protocol complete.');">
+                        <div class="space-y-1">
+                            <label class="text-xs text-cyber-textMuted">DATA_PAYLOAD (Message Body)</label>
+                            <textarea rows="4" required class="w-full bg-cyber-bg border border-cyber-border rounded px-3 py-2 text-white focus:outline-none focus:border-cyber-purple" placeholder="Write operational requirements here..."></textarea>
+                        </div>
+                        <button type="submit" class="w-full py-3 border border-cyber-purple text-cyber-purple font-bold tracking-widest rounded hover:bg-cyber-purple hover:text-black transition-all">EXECUTE_TRANSMISSION</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-black/40 border-t border-cyber-border py-8 text-xs font-mono text-cyber-textMuted">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div>© 2026 Ananya Jain. Secure parameters sustained.</div>
+            <div class="flex space-x-6">
+                <a href="https://github.com/AnanyaJain2813" target="_blank" class="hover:text-cyber-purple">GitHub</a>
+                <a href="https://www.linkedin.com/in/ananya-jain-715b9b29a/" target="_blank" class="hover:text-cyber-purple">LinkedIn</a>
+                <a href="https://leetcode.com/u/Ananya_Jain28/" target="_blank" class="hover:text-cyber-purple">LeetCode</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Script Subsystems Engine Core -->
+    <script>
+        const initializationTime = Date.now();
+
+        function updateDashboardTimers() {
+            const timeElapsedInSeconds = Math.floor((Date.now() - initializationTime) / 1000);
+            let displayString = '';
+            
+            if (timeElapsedInSeconds < 60) {
+                displayString = `Last updated: ${timeElapsedInSeconds}s ago`;
+            } else {
+                const minutes = Math.floor(timeElapsedInSeconds / 60);
+                const seconds = timeElapsedInSeconds % 60;
+                displayString = `Last updated: ${minutes}m ${seconds}s ago`;
+            }
+            
+            document.getElementById('githubTimer').innerText = displayString;
+            document.getElementById('leetcodeTimer').innerText = displayString;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.lucide) window.lucide.createIcons();
+            
+            updateDashboardTimers();
+            setInterval(updateDashboardTimers, 1000);
+        });
+
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const menuIcon = document.getElementById('menuIcon');
+
+        if (mobileMenuBtn && mobileMenu) {
+            mobileMenuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+                const isHidden = mobileMenu.classList.contains('hidden');
+                menuIcon.setAttribute('data-lucide', isHidden ? 'menu' : 'x');
+                if (window.lucide) window.lucide.createIcons();
+            });
+        }
+
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const projectCards = document.querySelectorAll('.project-card');
+        filterButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterButtons.forEach(b => {
+                    b.className = 'filter-btn px-4 py-2 bg-transparent text-slate-400 border border-cyber-border rounded';
+                });
+                btn.className = 'filter-btn px-4 py-2 bg-cyber-purple text-black rounded font-bold';
+                const currentFilter = btn.getAttribute('data-filter');
+                projectCards.forEach(card => {
+                    card.style.display = (currentFilter === 'all' || card.getAttribute('data-category') === currentFilter) ? 'flex' : 'none';
+                });
+            });
+        });
+
+        const terminalInput = document.getElementById('terminalInput');
+        const terminalOutput = document.getElementById('terminalOutput');
+        const terminalBody = document.getElementById('terminalBody');
+
+        if (terminalBody && terminalInput) {
+            terminalBody.addEventListener('click', () => terminalInput.focus());
+            terminalInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    const command = this.value.trim().toLowerCase();
+                    this.value = '';
+                    const promptLine = document.createElement('div');
+                    promptLine.className = 'text-white flex';
+                    promptLine.innerHTML = `<span class="text-cyber-sapphire mr-2">guest@ananya_sec:~$&nbsp;</span><span>${escapeHtml(command)}</span>`;
+                    terminalOutput.appendChild(promptLine);
+                    if (command.length === 0) return;
+
+                    const responseLine = document.createElement('div');
+                    responseLine.className = 'pl-2 text-xs font-mono tracking-wide py-1';
+
+                    switch(command) {
+                        case 'help':
+                            responseLine.innerHTML = `<p class="text-cyber-purple">Valid Directives Reference:</p><p class="pl-2">&gt; about / skills / clear</p>`;
+                            break;
+                        case 'about':
+                            responseLine.innerHTML = `<p class="text-white">Ananya Jain | SecOps Specialist at VIT Bhopal (CGPA Profile Active)</p>`;
+                            break;
+                        case 'skills':
+                            responseLine.innerHTML = `<p class="text-cyber-sapphire">SOC Operations, SIEM Monitoring, OWASP Assessments, Wireshark Packet Analysis</p>`;
+                            break;
+                        case 'clear':
+                            terminalOutput.innerHTML = ''; return;
+                        default:
+                            responseLine.innerHTML = `<p class="text-red-400">[-] Logic fault. Instruction set unmapped. Try "help".</p>`;
+                    }
+                    terminalOutput.appendChild(responseLine);
+                    terminalBody.scrollTop = terminalBody.scrollHeight;
+                }
+            });
+        }
+        function escapeHtml(str) { return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+
+        const sections = document.querySelectorAll('.section-target, #home');
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        window.addEventListener('scroll', () => {
+            let current = 'home';
+            const scrollPos = window.scrollY + 100;
+            sections.forEach(section => {
+                if (scrollPos >= section.offsetTop && scrollPos < section.offsetTop + section.offsetHeight) {
+                    current = section.getAttribute('id');
+                }
+            });
+            navLinks.forEach(link => {
+                link.classList.toggle('text-cyber-purple', link.getAttribute('href') === `#${current}`);
+                link.classList.toggle('border-cyber-purple', link.getAttribute('href') === `#${current}`);
+            });
+        });
+
+        const canvas = document.getElementById('cyberCanvas');
+        const ctx = canvas.getContext('2d');
+        let width = canvas.width = window.innerWidth;
+        let height = canvas.height = window.innerHeight;
+
+        window.addEventListener('resize', () => {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        });
+
+        const alphabet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_@#$';
+        const fontSize = 14;
+        const columns = Math.floor(width / fontSize);
+        const rainDrops = Array(columns).fill(1);
+
+        function animateCanvas() {
+            ctx.fillStyle = 'rgba(7, 10, 19, 0.05)';
+            ctx.fillRect(0, 0, width, height);
+            
+            ctx.fillStyle = '#d946ef';
+            ctx.font = fontSize + 'px monospace';
+            
+            for (let i = 0; i < rainDrops.length; i++) {
+                const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+                ctx.fillText(text, i * fontSize, rainDrops[i] * fontSize);
+                
+                if (rainDrops[i] * fontSize > height && Math.random() > 0.975) {
+                    rainDrops[i] = 0;
+                }
+                rainDrops[i]++;
+            }
+            requestAnimationFrame(animateCanvas);
+        }
+        animateCanvas();
+    </script>
+</body>
+</html>
